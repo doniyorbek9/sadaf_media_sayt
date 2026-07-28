@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sadaf Media — Toy va marosimlar uchun videografiya</title>
+<link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E0D0C; --bg-card:#18160F; --gold:#C9A227; --gold-light:#E8C468;
+    --text:#F2EFE9; --muted:#8C8579; --hairline:#2C2820;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+  .sprockets{display:flex;justify-content:space-between;padding:0 6px;}
+  .sprockets span{width:9px;height:9px;border-radius:2px;background:var(--bg);border:1px solid var(--hairline);margin:6px 0;}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(14,13,12,0.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:14px 32px;max-width:1180px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
+  .logo img{height:40px;width:auto;}
+  .navlinks{display:flex;gap:32px;font-size:14px;color:var(--muted);}
+  .navlinks a:hover{color:var(--text);}
+  .cta-btn{background:var(--gold);color:#141209;font-weight:600;font-size:14px;padding:10px 20px;border-radius:2px;border:none;cursor:pointer;transition:background .2s;}
+  .cta-btn:hover{background:var(--gold-light);}
+
+  .hero{position:relative;padding:0;overflow:hidden;border-bottom:1px solid var(--hairline);}
+  .hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.34;filter:saturate(0.85);}
+  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(14,13,12,0.4) 0%, rgba(14,13,12,0.75) 60%, var(--bg) 100%);z-index:1;}
+  .hero-inner{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:90px 32px 110px;}
+  .timecode{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:1px;display:flex;align-items:center;gap:10px;margin-bottom:26px;}
+  .timecode::before{content:"●";color:#C94A27;font-size:10px;}
+  .hero h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(38px,6vw,72px);line-height:1.03;letter-spacing:-1px;max-width:780px;}
+  .hero h1 em{font-style:italic;font-weight:300;color:var(--gold-light);}
+  .hero p.lead{margin-top:22px;font-size:17px;color:var(--muted);max-width:480px;line-height:1.6;}
+  .hero-actions{margin-top:34px;display:flex;gap:16px;flex-wrap:wrap;}
+  .btn-ghost{border:1px solid rgba(242,239,233,0.25);color:var(--text);padding:13px 24px;font-size:14px;border-radius:2px;}
+  .btn-ghost:hover{border-color:var(--gold);}
+
+  section{padding:100px 0;border-bottom:1px solid var(--hairline);}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+  h2.section-title{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(28px,3.4vw,42px);max-width:600px;line-height:1.1;letter-spacing:-0.5px;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:50px;flex-wrap:wrap;}
+  .section-head p{color:var(--muted);max-width:340px;font-size:15px;line-height:1.6;}
+
+  /* Xizmatlar */
+  .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--hairline);border:1px solid var(--hairline);}
+  .service-card{background:var(--bg);padding:28px 24px;transition:background .2s;}
+  .service-card:hover{background:var(--bg-card);}
+  .service-card .title{font-family:'Fraunces',serif;font-size:18px;margin-bottom:4px;}
+
+  /* Paketlar */
+  .pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .price-card{background:var(--bg-card);border:1px solid var(--hairline);padding:30px 24px;display:flex;flex-direction:column;transition:border-color .2s;}
+  .price-card:hover{border-color:var(--gold);}
+  .price-card .pname{font-family:'Fraunces',serif;font-size:22px;margin-bottom:10px;}
+  .price-card .pdesc{color:var(--muted);font-size:13.5px;line-height:1.5;flex:1;margin-bottom:20px;}
+  .price-card .pprice{font-family:'JetBrains Mono',monospace;color:var(--gold-light);font-size:16px;padding-top:16px;border-top:1px solid var(--hairline);}
+
+  /* AI */
+  .ai-strip{display:grid;grid-template-columns:0.9fr 1.1fr;gap:64px;align-items:center;}
+  .ai-copy p{color:var(--muted);font-size:15.5px;line-height:1.7;margin-top:18px;max-width:440px;}
+  .slate{background:var(--bg-card);border:1px solid var(--hairline);max-width:440px;margin-left:auto;}
+  .slate-top{background:repeating-linear-gradient(-45deg,#1c1912,#1c1912 14px,#100e09 14px,#100e09 28px);height:34px;border-bottom:2px solid var(--gold);}
+  .slate-header{padding:16px 20px;border-bottom:1px solid var(--hairline);display:flex;justify-content:space-between;align-items:center;}
+  .slate-header .name{font-family:'Fraunces',serif;font-size:16px;}
+  .slate-header .status{font-size:11px;color:var(--gold-light);font-family:'JetBrains Mono',monospace;}
+  .slate-body{padding:20px;display:flex;flex-direction:column;gap:12px;min-height:220px;max-height:360px;overflow-y:auto;}
+  .bubble{padding:11px 15px;border-radius:3px;font-size:13.5px;line-height:1.55;max-width:88%;}
+  .bubble.user{background:#221F16;align-self:flex-end;color:var(--text);}
+  .bubble.ai{background:transparent;border:1px solid var(--hairline);align-self:flex-start;color:var(--text);}
+  .bubble.typing{color:var(--muted);font-style:italic;}
+  .slate-input{display:flex;border-top:1px solid var(--hairline);}
+  .slate-input input{flex:1;background:transparent;border:none;color:var(--text);padding:16px 20px;font-size:13.5px;font-family:'Inter',sans-serif;outline:none;}
+  .slate-input button{background:var(--gold);color:#141209;border:none;padding:0 22px;font-weight:600;font-size:13px;cursor:pointer;}
+  .slate-input button:hover{background:var(--gold-light);}
+
+  /* Jamoa */
+  .credits-list{border-top:1px solid var(--hairline);}
+  .credit-row{display:grid;grid-template-columns:60px 1fr 240px;align-items:center;padding:18px 0;border-bottom:1px solid var(--hairline);font-size:14.5px;}
+  .credit-row .idx{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:12px;}
+  .credit-row .name{font-family:'Fraunces',serif;font-size:19px;font-weight:500;}
+  .credit-row .spec{color:var(--muted);font-size:13.5px;text-align:right;}
+
+  /* Buyurtma */
+  .callsheet{background:var(--bg-card);border:1px solid var(--hairline);padding:44px;display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  .callsheet-head{grid-column:1/-1;display:flex;justify-content:space-between;border-bottom:1px solid var(--hairline);padding-bottom:18px;margin-bottom:6px;}
+  .callsheet-head .k{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;}
+  .field label{display:block;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:0.5px;margin-bottom:8px;}
+  .field select,.field input,.field textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--hairline);color:var(--text);padding:10px 0;font-size:15px;font-family:'Inter',sans-serif;outline:none;}
+  .field select:focus,.field input:focus,.field textarea:focus{border-color:var(--gold);}
+  .callsheet .full{grid-column:1/-1;}
+  .callsheet .submit-row{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+  .form-msg{font-size:13px;color:var(--gold-light);font-family:'JetBrains Mono',monospace;}
+
+  footer{padding:44px 0;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;flex-wrap:wrap;gap:12px;}
+
+  @media(max-width:860px){
+    .navlinks{display:none;}
+    .pricing-grid{grid-template-columns:1fr 1fr;}
+    .ai-strip{grid-template-columns:1fr;}
+    .slate{margin-left:0;max-width:100%;}
+    .callsheet{grid-template-columns:1fr;padding:26px;}
+  }
+  @media(max-width:520px){.pricing-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="sprockets">
+  {% for i in range(24) %}<span></span>{% endfor %}
+</div>
+
+<header>
+  <nav>
+    <div class="logo"><img src="{{ url_for('static', filename='logo.png') }}" alt="Sadaf Media"> SADAF MEDIA</div>
+    <div class="navlinks">
+      <a href="#hizmatlar">Xizmatlar</a>
+      <a href="#narxlar">Paketlar</a>
+      <a href="#jamoa">Jamoa</a>
+      <a href="#ai">AI yordamchi</a>
+    </div>
+    <a href="#buyurtma" class="cta-btn">Sana band qilish</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <video autoplay muted loop playsinline>
+    <source src="{{ url_for('static', filename='hero-preview.mp4') }}" type="video/mp4">
+  </video>
+  <div class="hero-inner">
+    <div class="timecode">REC — ANDIJON, UZ</div>
+    <h1>Har bir <em>lahza</em><br>bir umrlik film.</h1>
+    <p class="lead">Nikoh, xatna, banket va boshqa marosimlaringizni jamoamiz kino tilida hikoya qiladi.</p>
+    <div class="hero-actions">
+      <a href="#buyurtma" class="cta-btn">Sana band qilish</a>
+      <a href="#narxlar" class="btn-ghost">Paketlarni ko'rish ↓</a>
+    </div>
+  </div>
+</section>
+
+<section id="hizmatlar">
+  <div class="wrap">
+    <div class="section-head">
+      <div><div class="eyebrow">Xizmatlar</div><h2 class="section-title">Qaysi marosim bo'lmasin, biz suratga olamiz</h2></div>
+      <p>Har bir marosim turi uchun tajribali jamoa va moslashuvchan paketlar.</p>
+    </div>
+    <div class="services-grid">
+      {% for s in services %}
+      <div class="service-card"><div class="title">{{ s }}</div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="narxlar">
+  <div class="wrap">
+    <div class="section-head">
+      <div><div class="eyebrow">Paketlar</div><h2 class="section-title">Byudjetingizga mos paketni tanlang</h2></div>
+      <p>To'lov xizmat ko'rsatilgandan keyin qabul qilinadi.</p>
+    </div>
+    <div class="pricing-grid">
+      {% for key, p in packages.items() %}
+      <div class="price-card">
+        <div class="pname">{{ p.nomi }}</div>
+        <div class="pdesc">{{ p.tavsif }}</div>
+        <div class="pprice">{{ p.narx }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="ai">
+  <div class="wrap ai-strip">
+    <div class="ai-copy">
+      <div class="eyebrow">AI yordamchi</div>
+      <h2 class="section-title">Savolingiz bormi? AI yordamchimizdan so'rang</h2>
+      <p>Paketlar, narxlar va bo'sh sanalar haqida savol bering — darhol javob olasiz.</p>
+    </div>
+    <div class="slate">
+      <div class="slate-top"></div>
+      <div class="slate-header"><div class="name">Sadaf AI</div><div class="status">● onlayn</div></div>
+      <div class="slate-body" id="chatBody">
+        <div class="bubble ai">Assalomu alaykum! Men Sadaf Media yordamchisiman. Marosim turi va byudjetingizni ayting — mos paketni tavsiya qilaman.</div>
+      </div>
+      <div class="slate-input">
+        <input type="text" id="chatInput" placeholder="Xabar yozing..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button onclick="sendChat()">Yuborish</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="jamoa">
+  <div class="wrap">
+    <div class="section-head">
+      <div><div class="eyebrow">Jamoa</div><h2 class="section-title">Bizning ijodkorlar</h2></div>
+    </div>
+    <div class="credits-list">
+      {% for t in team %}
+      <div class="credit-row"><div class="idx">{{ '%02d'|format(loop.index) }}</div><div class="name">{{ t.ism }}</div><div class="spec">{{ t.rol }}</div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="buyurtma" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="section-head">
+      <div><div class="eyebrow">Bandlash</div><h2 class="section-title">Sanangizni band qiling</h2></div>
+      <p>Forma to'ldirilgach, ma'lumot Telegramga va buyurtmalar jadvaliga tushadi.</p>
+    </div>
+    <form class="callsheet" id="orderForm">
+      <div class="callsheet-head"><div class="k">CALL SHEET — SADAF MEDIA</div><div class="k" id="orderNo">№ ----</div></div>
+      <div class="field"><label>Ism</label><input type="text" id="f_name" required></div>
+      <div class="field"><label>Telefon</label><input type="text" id="f_phone" placeholder="+998" required></div>
+      <div class="field"><label>Marosim turi</label>
+        <select id="f_event">
+          {% for s in services %}<option>{{ s }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field"><label>Marosim sanasi</label><input type="date" id="f_date"></div>
+      <div class="field full"><label>Paket</label>
+        <select id="f_package">
+          {% for key, p in packages.items() %}<option value="{{ p.nomi }}">{{ p.nomi }} — {{ p.narx }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field full"><label>Izoh (ixtiyoriy)</label><textarea id="f_note" rows="2"></textarea></div>
+      <div class="submit-row">
+        <span class="form-msg" id="formMsg"></span>
+        <button type="submit" class="cta-btn">Buyurtma yuborish →</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div>© 2026 Sadaf Media</div>
+  <div>Andijon, O'zbekiston</div>
+</footer>
+
+<script>
+  document.getElementById('orderNo').textContent = '№ ' + Math.floor(1000 + Math.random()*9000);
+
+  async function sendChat(){
+    const input = document.getElementById('chatInput');
+    const body = document.getElementById('chatBody');
+    const text = input.value.trim();
+    if(!text) return;
+    input.value = '';
+
+    const userBubble = document.createElement('div');
+    userBubble.className = 'bubble user';
+    userBubble.textContent = text;
+    body.appendChild(userBubble);
+
+    const typing = document.createElement('div');
+    typing.className = 'bubble ai typing';
+    typing.textContent = 'yozmoqda...';
+    body.appendChild(typing);
+    body.scrollTop = body.scrollHeight;
+
+    window.chatHistory = window.chatHistory || [];
+    window.chatHistory.push({role:'user', content:text});
+
+    try{
+      const res = await fetch('/api/chat', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({message:text, history: window.chatHistory})
+      });
+      const data = await res.json();
+      typing.remove();
+      const aiBubble = document.createElement('div');
+      aiBubble.className = 'bubble ai';
+      aiBubble.textContent = data.reply || 'Kechirasiz, xatolik yuz berdi.';
+      body.appendChild(aiBubble);
+      window.chatHistory.push({role:'assistant', content: aiBubble.textContent});
+    }catch(e){
+      typing.remove();
+      const errBubble = document.createElement('div');
+      errBubble.className = 'bubble ai';
+      errBubble.textContent = 'Internet aloqasida xatolik. Qayta urinib ko\'ring.';
+      body.appendChild(errBubble);
+    }
+    body.scrollTop = body.scrollHeight;
+  }
+
+  document.getElementById('orderForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const msg = document.getElementById('formMsg');
+    msg.textContent = 'Yuborilmoqda...';
+    const payload = {
+      name: document.getElementById('f_name').value,
+      phone: document.getElementById('f_phone').value,
+      event_type: document.getElementById('f_event').value,
+      event_date: document.getElementById('f_date').value,
+      package: document.getElementById('f_package').value,
+      note: document.getElementById('f_note').value,
+    };
+    try{
+      const res = await fetch('/api/order', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(data.ok){
+        msg.textContent = "✅ Qabul qilindi! Tez orada bog'lanamiz.";
+        e.target.reset();
+      } else {
+        msg.textContent = "❌ " + (data.error || 'Xatolik yuz berdi');
+      }
+    }catch(err){
+      msg.textContent = '❌ Internet aloqasida xatolik';
+    }
+  });
+</script>
+
+</body>
+</html>
