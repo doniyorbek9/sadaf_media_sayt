@@ -14,18 +14,34 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 
 # ---------- Sozlamalar (Railway'da Environment Variables orqali beriladi) ----------
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-ADMIN_CHAT_ID = os.environ.get("ADMIN_CHAT_ID", "")
+ADMIN_CHAT_ID = os.environ.get("ADMIN_CHAT_ID", "")          # /README.md ga qarang - qanday olish
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
-ADMIN_DOWNLOAD_KEY = os.environ.get("ADMIN_DOWNLOAD_KEY", "sadaf2026")
+ADMIN_DOWNLOAD_KEY = os.environ.get("ADMIN_DOWNLOAD_KEY", "sadaf2026")  # /admin/orders?key=... uchun
 
 ORDERS_FILE = os.path.join(os.path.dirname(__file__), "data", "orders.xlsx")
 os.makedirs(os.path.dirname(ORDERS_FILE), exist_ok=True)
 
 PACKAGES = {
-    "standart": {"nomi": "Standart", "tavsif": "1 kunlik, 1 ta kamera", "narx": "700 000 so'm"},
-    "premium": {"nomi": "Premium", "tavsif": "2 kunlik — 1-kun 1 ta kamera, 2-kun 2 ta kamera", "narx": "2 100 000 so'm"},
-    "ultra": {"nomi": "Ultra", "tavsif": "2 kunlik — 1-kun 1 ta kamera, 2-kun 2 ta kamera + kran", "narx": "3 600 000 so'm"},
-    "cinema_grand": {"nomi": "Cinema Grand", "tavsif": "3 kunlik — 1-kun 1 kamera, 2-kun 2 kamera + kran, 3-kun 1 kamera", "narx": "so'rov bo'yicha (hozircha narx belgilanmagan)"},
+    "standart": {
+        "nomi": "Standart",
+        "tavsif": "1 kunlik, 1 ta kamera",
+        "narx": "700 000 so'm",
+    },
+    "premium": {
+        "nomi": "Premium",
+        "tavsif": "2 kunlik — 1-kun 1 ta kamera, 2-kun 2 ta kamera",
+        "narx": "2 100 000 so'm",
+    },
+    "ultra": {
+        "nomi": "Ultra",
+        "tavsif": "2 kunlik — 1-kun 1 ta kamera, 2-kun 2 ta kamera + kran",
+        "narx": "3 600 000 so'm",
+    },
+    "cinema_grand": {
+        "nomi": "Cinema Grand",
+        "tavsif": "3 kunlik — 1-kun 1 kamera, 2-kun 2 kamera + kran, 3-kun 1 kamera",
+        "narx": "so'rov bo'yicha (hozircha narx belgilanmagan)",
+    },
 }
 
 SERVICES = ["Nikoh to'yi", "Xatna (sunnat) to'yi", "Banket", "Tug'ilgan kun",
@@ -172,6 +188,7 @@ def download_orders():
 def telegram_webhook():
     update = request.get_json(force=True, silent=True) or {}
 
+    # Oddiy matnli xabar (masalan /start)
     if "message" in update:
         msg = update["message"]
         chat_id = str(msg.get("chat", {}).get("id", ""))
@@ -194,6 +211,7 @@ def telegram_webhook():
             tg_send_message(chat_id, "Buyurtmalarni yuklab olish uchun /start ni bosing.",
                              reply_markup=ORDERS_BUTTON_MARKUP)
 
+    # Tugma bosilganda
     elif "callback_query" in update:
         cq = update["callback_query"]
         chat_id = str(cq.get("message", {}).get("chat", {}).get("id", ""))
@@ -214,7 +232,7 @@ def telegram_webhook():
 def chat():
     data = request.get_json(force=True, silent=True) or {}
     user_message = (data.get("message") or "").strip()
-    history = data.get("history") or []
+    history = data.get("history") or []  # [{role, content}, ...] oldingi xabarlar
 
     if not user_message:
         return jsonify({"ok": False, "error": "Xabar bo'sh"}), 400
